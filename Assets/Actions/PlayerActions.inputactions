@@ -1,0 +1,52 @@
+{
+    "name": "PlayerActions",
+    "maps": [
+        {
+            "name": "PlayerActions",
+            "id": "f74836f7-a562-4f47-9de6-a4749c117b87",
+            "actions": [
+                {
+                    "name": "Attack",
+                    "type": "Button",
+                    "id": "75be5684-837e-4111-8e6d-a00c6ba4d115",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                },
+                {
+                    "name": "PlayerMovement",
+                    "type": "Button",
+                    "id": "731e70dc-6186-4ed6-bd64-05e605d90fed",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
+                }
+            ],
+            "bindings": [
+                {
+                    "name": "",
+                    "id": "66b75262-ca0e-4096-8070-0ebe8e9d56f4",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Attack",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "bcfcbd20-771e-49fe-8ede-b50fb1b624d3",
+                    "path": "",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "PlayerMovement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                }
+            ]
+        }
+    ],
+    "controlSchemes": []
+}
