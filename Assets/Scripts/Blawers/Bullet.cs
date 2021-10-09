@@ -50,6 +50,7 @@ public class Bullet : MonoBehaviour
 
         if(Vector3.Distance(transform.position, SpawnedPosition) >= Distance)
         {
+            // 
             Destroy(gameObject);
         }
     }

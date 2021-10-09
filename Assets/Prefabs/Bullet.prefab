@@ -112,7 +112,7 @@ MonoBehaviour:
   Speed: 10
   Damage: 10
   Type: Basic
-  Distance: 20
+  Distance: 100
 --- !u!54 &8840309748788425173
 Rigidbody:
   m_ObjectHideFlags: 0
