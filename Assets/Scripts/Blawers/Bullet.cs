@@ -4,66 +4,42 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
-    /// <BulletStat>
-    /// Speed:  10.0f
-    /// Damage: 10.0f
-    /// Owner:  Who has this
-    /// Type:   Basic Bullet; Now, not specified how to use it.
-    /// 
-    /// </BulletStat>
+    public float speed = 10.0f;
+    public float damage = 10.0f;
+    private BrawlerController owner = null;
+    public string type = "Basic";
 
-    public float Speed = 10.0f;
-    public float Damage = 10.0f;
-    private BrawlerController Owner = null;
-    public string Type = "Basic";
+    private Vector3 spawnedPosition;
+    private Vector3 destination;
+    public float distance = 50.0f;
 
-    private Vector3 SpawnedPosition;
-    private Vector3 Destination;
-    public float Distance = 50.0f;
-
-    public void SetStatOnSpawn(BrawlerController owner, Vector3 spawnedPosition, Vector3 destination)
+    public void SetBulletInfo(BrawlerController owner, Vector3 spawnedPosition, Vector3 destination)
     {
-        Owner = owner;
-        SpawnedPosition = spawnedPosition;
-        Destination = destination;
+        this.owner = owner;
+        this.spawnedPosition = spawnedPosition;
+        this.destination = destination;
 
-        transform.SetPositionAndRotation(spawnedPosition, Quaternion.identity);
-    }
+		transform.SetPositionAndRotation(spawnedPosition, Quaternion.identity);
+	}
 
-    void Start()
-    {
-
-    }
-
-    void Update()
-    {
-        
-    }
-
+    // Update에 넣는 것보다 Force로 물리적인 힘을 주는건 어떠한지
     private void LateUpdate()
     {
-        if (Owner != null)
+        if (owner != null)
         {
             // Do your work
-            transform.Translate(Destination * Speed * Time.deltaTime);
+            transform.Translate(destination * speed * Time.deltaTime);
         }
 
-        if(Vector3.Distance(transform.position, SpawnedPosition) >= Distance)
+        if(Vector3.Distance(transform.position, spawnedPosition) >= distance)
         {
-            // 
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
-
-    void MoveToDest()
-    {
-        Vector3.MoveTowards(SpawnedPosition, Destination, 100.0f);
-    }
-
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(Owner.gameObject.name + " " + other.gameObject.name);
-        Destroy(gameObject);
+        Debug.Log(owner.gameObject.name + " " + other.gameObject.name);
+        gameObject.SetActive(false);
     }
 }

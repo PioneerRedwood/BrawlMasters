@@ -19,62 +19,13 @@ public class BrawlerController : MonoBehaviour
 	public float shootingDelay = 0.25f;
 	public GameObject bullet;
 
+	public Animation anim;
+
 	void Start()
 	{
 		lastShootingTime = Time.realtimeSinceStartup;
-		//StartCoroutine("Reloading");
 		InvokeRepeating("CheckReloading", 0.0f, reloadTime);
 	}
-	#region deprecated
-	/*
-	void Movement()
-	{
-		// Movement X, Y
-		float xAxis = Input.GetAxisRaw("Horizontal");
-		float zAxis = Input.GetAxisRaw("Vertical");
-
-		gameObject.transform.Translate(Vector3.forward * moveSpeed * zAxis * Time.deltaTime);
-		gameObject.transform.Translate(Vector3.right * moveSpeed * xAxis * Time.deltaTime);
-	}
-
-	void Shooting()
-	{
-		if (Input.GetMouseButton(1))
-		{
-			if (RestMagazine > 0)
-			{
-				if ((LastShootingTime + ShootingDelay) <= Time.realtimeSinceStartup)
-				{
-					RaycastHit hit;
-					Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-					if (Physics.Raycast(ray, out hit))
-					{
-						//Debug.Log("hit.point: " + hit.point);
-
-						RestMagazine -= 1;
-						UpdateState();
-						LastShootingTime = Time.realtimeSinceStartup;
-
-						GameObject bullet = Instantiate(Bullet, MuzzlePosition);
-						bullet.GetComponent<Bullet>().SetStatOnSpawn(this, MuzzlePosition.position, transform.forward * 1.5f);
-						bullet.transform.SetParent(GameObject.Find("Spawned Object").transform);
-						NetworkManager.instance.SendData(gameObject.name + " make " + bullet.name);
-					}
-				}
-				else
-				{
-					//Debug.Log("Reloading..");
-				}
-			}
-			else
-			{
-				//Debug.Log("There is no rest magazine.");
-			}
-		}
-	}
-	*/
-	#endregion
 
 	void CheckReloading()
 	{
@@ -104,7 +55,6 @@ public class BrawlerController : MonoBehaviour
 
 	public void OnAttack(InputAction.CallbackContext value)
 	{
-		//Debug.Log($"OnAttack{value}");
 		if (restMagazine > 0)
 		{
 			if ((lastShootingTime + shootingDelay) <= Time.realtimeSinceStartup)
@@ -113,9 +63,19 @@ public class BrawlerController : MonoBehaviour
 				textMagazine.text = restMagazine+ " / " + magazine;
 				lastShootingTime = Time.realtimeSinceStartup;
 
-				GameObject bulletObject = Instantiate(bullet, muzzlePosition);
-				bulletObject.GetComponent<Bullet>().SetStatOnSpawn(this, muzzlePosition.position, transform.forward * 1.5f);
-				bulletObject.transform.SetParent(GameObject.Find("SpawnedBullets").transform);
+				GameObject bulletObject = ObjectPooler.SharedInstance.GetPooledObject();
+				if(bulletObject != null)
+				{
+					if(anim.GetClip("Fire"))
+					{
+						anim.CrossFade("Fire", 0.1f);
+					}
+
+					bulletObject.GetComponent<Bullet>().SetBulletInfo(this, muzzlePosition.position, transform.forward * 1.5f);
+					bulletObject.SetActive(true);
+					//bulletObject.transform.SetParent(GameObject.Find("BulletPooler").transform);
+				}
+				
 			}
 		}
 	}
