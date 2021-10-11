@@ -4,7 +4,11 @@ using UnityEngine;
 
 public class BasicEnemy : MonoBehaviour
 {
-    GameObject target;
+    private GameObject target;
+
+    //public float moveSpeed = 0.5f;
+    public float turnSpeed = 2.0f;
+    public Rigidbody body;
 
     void Start()
     {
@@ -13,9 +17,12 @@ public class BasicEnemy : MonoBehaviour
 
     void Update()
     {
-        //gameObject.transform.position = 
-        //    Vector3.Lerp(gameObject.transform.position, target.transform.position, Time.time);
-
         transform.position = Vector3.MoveTowards(transform.position, target.transform.position, 0.03f);
+
+        Vector3 targetDirection = target.transform.position - transform.position;
+        float singleStep = turnSpeed * Time.deltaTime;
+
+        Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
+        transform.rotation = Quaternion.LookRotation(newDirection);
     }
 }

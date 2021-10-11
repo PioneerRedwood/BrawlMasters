@@ -42,4 +42,9 @@ public class Bullet : MonoBehaviour
         Debug.Log(owner.gameObject.name + " " + other.gameObject.name);
         gameObject.SetActive(false);
     }
+
+	private void OnCollisionEnter(Collision collision)
+	{
+        Debug.Log(owner.gameObject.name + " " + collision.gameObject.name);
+    }
 }

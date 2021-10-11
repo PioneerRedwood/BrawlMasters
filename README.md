@@ -5,6 +5,8 @@ BrawlMasters is a toy shooting game project. Made by Unity.
 
 
 
+## Brief concept
+
 ##### Brawler(Player)
 
 - Character & Camera movement
@@ -18,9 +20,9 @@ BrawlMasters is a toy shooting game project. Made by Unity.
 
 ##### Weapon
 
-- Target system
+- Attack system
 
-##### Stage
+##### Scene ~~Stage~~
 
-- Scene managing
+- Scene management
 
