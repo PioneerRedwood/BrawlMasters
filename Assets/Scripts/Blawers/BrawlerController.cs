@@ -87,4 +87,9 @@ public class BrawlerController : MonoBehaviour
 		transform.Translate(currMoveSpeed * smoothInputMovement.x * Time.deltaTime * Vector3.right);
 
 	}
+
+	private void OnTriggerEnter(Collider other)
+	{
+		Debug.Log(other.tag);
+	}
 }

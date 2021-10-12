@@ -35,16 +35,29 @@ public class Bullet : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+
+        
     }
 
-    private void OnTriggerEnter(Collider other)
+	public void OnTriggerEnter(Collider other)
     {
         Debug.Log(owner.gameObject.name + " " + other.gameObject.name);
+
+        if(other.CompareTag("Enemy"))
+		{
+            Debug.Log("Shot enemy!");
+		}
+
         gameObject.SetActive(false);
     }
 
-	private void OnCollisionEnter(Collision collision)
+	private void OnTriggerExit(Collider other)
 	{
-        Debug.Log(owner.gameObject.name + " " + collision.gameObject.name);
+        Debug.Log(owner.gameObject.name + " " + other.gameObject.name);
+    }
+
+	private void OnTriggerStay(Collider other)
+	{
+        Debug.Log(owner.gameObject.name + " " + other.gameObject.name);
     }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BasicEnemy : MonoBehaviour
+public class EnemyController : MonoBehaviour
 {
     private GameObject target;
 
@@ -24,5 +24,11 @@ public class BasicEnemy : MonoBehaviour
 
         Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
         transform.rotation = Quaternion.LookRotation(newDirection);
+
+    }
+
+	private void OnTriggerEnter(Collider other)
+	{
+        Debug.Log(gameObject.name + " " + other.gameObject.name);
     }
 }

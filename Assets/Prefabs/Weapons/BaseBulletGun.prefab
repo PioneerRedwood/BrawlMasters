@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 6441155430932874432}
   - component: {fileID: 4329773817333569493}
   - component: {fileID: 502148487089425017}
-  - component: {fileID: 8862013404799797320}
   m_Layer: 0
   m_Name: Body
   m_TagString: Untagged
@@ -82,19 +81,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8862013404799797320
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 805459524300353440}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &2482172463926706241
 GameObject:
   m_ObjectHideFlags: 0
@@ -106,7 +92,6 @@ GameObject:
   - component: {fileID: 8389425819006499160}
   - component: {fileID: 7100283621929606093}
   - component: {fileID: 5512806436259514703}
-  - component: {fileID: 5489606896117176088}
   m_Layer: 0
   m_Name: Grip
   m_TagString: Untagged
@@ -177,19 +162,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &5489606896117176088
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2482172463926706241}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &4614623523476649179
 GameObject:
   m_ObjectHideFlags: 0
