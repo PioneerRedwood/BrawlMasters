@@ -57,7 +57,7 @@ public class BaseBulletGun : MonoBehaviour
 				UIManager.Instance.weaponStatText.text = restMagazine + " / " + magazine;
 				lastShootingTime = Time.realtimeSinceStartup;
 
-				GameObject bulletObject = ObjectPooler.SharedInstance.GetPooledObject();
+				GameObject bulletObject = ObjectPooler.SharedInstance.GetPooledObject("Bullet");
 				if (bulletObject != null)
 				{
 					bulletObject.GetComponent<Bullet>().SetBulletInfo(controller, muzzlePosition.position, transform.forward * 1.5f);

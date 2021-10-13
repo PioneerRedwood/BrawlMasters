@@ -4,48 +4,81 @@ using UnityEngine;
 
 public class ObjectPooler : MonoBehaviour
 {
-    public static ObjectPooler SharedInstance;
+	public static ObjectPooler SharedInstance;
 
-    [System.Serializable]
-    public class ObjectPoolItem
-    {
-        public GameObject poolItem;
-        public int amount;
-        public bool isExpand;
-    }
-
-    private void Awake()
+	[System.Serializable]
+	public class ObjectPoolItem
 	{
-        SharedInstance = this;
+		public GameObject poolItem;
+		public GameObject parentPooler;
+		public int amount;
+		public bool shouldExpand;
+		public bool randomlyPositioned;
+		public bool activeStarted;
 	}
 
-    public List<GameObject> pooledObjects;
-    public GameObject objectToPool;
-    public int amountToPool;
+	private void Awake()
+	{
+		SharedInstance = this;
 
-	// Start is called before the first frame update
-	void Start()
-    {
 		pooledObjects = new List<GameObject>();
-		for (int i = 0; i < amountToPool; ++i)
+
+		foreach (ObjectPoolItem item in itemsToPool)
 		{
-			GameObject obj = (GameObject)Instantiate(objectToPool);
-			obj.SetActive(false);
-            obj.transform.SetParent(GameObject.Find("BulletsPooler").transform);
-            pooledObjects.Add(obj);
+			for (int i = 0; i < item.amount; ++i)
+			{
+				GameObject obj = Instantiate(item.poolItem);
+				if(item.activeStarted)
+				{
+					obj.SetActive(true);
+				}
+				else
+				{
+					obj.SetActive(false);
+				}
+
+				obj.transform.SetParent(item.parentPooler.transform);
+				if(item.randomlyPositioned)
+				{
+					obj.transform.Translate(new Vector3(Random.Range(0.0f, 1000.0f), 1, Random.Range(0.0f, 1000.0f)));
+				}
+				
+				pooledObjects.Add(obj);
+
+			}
 		}
 	}
 
-    public GameObject GetPooledObject()
+	public List<ObjectPoolItem> itemsToPool;
+	public List<GameObject> pooledObjects;
+
+	void Start()
 	{
-        for(int i = 0; i < pooledObjects.Count; ++i)
+		
+	}
+
+	public GameObject GetPooledObject(string tag)
+	{
+		for (int i = 0; i < pooledObjects.Count; ++i)
 		{
-            if(!pooledObjects[i].activeInHierarchy)
+			if (!pooledObjects[i].activeInHierarchy && pooledObjects[i].CompareTag(tag))
 			{
-                return pooledObjects[i];
+				return pooledObjects[i];
 			}
 		}
 
-        return null;
+		foreach (ObjectPoolItem item in itemsToPool)
+		{
+			if(item.poolItem.CompareTag(tag) && item.shouldExpand)
+			{
+				GameObject obj = Instantiate(item.poolItem);
+				obj.SetActive(false);
+				obj.transform.SetParent(item.parentPooler.transform);
+				pooledObjects.Add(obj);
+				return obj;
+			}
+		}
+
+		return null;
 	}
 }

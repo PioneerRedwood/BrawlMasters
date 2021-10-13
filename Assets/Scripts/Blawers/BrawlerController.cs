@@ -8,6 +8,7 @@ using UnityEngine.InputSystem.Controls;
 public class BrawlerController : MonoBehaviour
 {
 	[Header("Player Properties")]
+	public float hp = 200;
 	public float moveSpeed = 2.0f;
 	public float turnSpeed = 2.0f;
 

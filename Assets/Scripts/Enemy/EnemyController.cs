@@ -6,7 +6,9 @@ public class EnemyController : MonoBehaviour
 {
     private GameObject target;
 
-    //public float moveSpeed = 0.5f;
+    [Header("Movement")]
+    [Range(0, 0.1f)]
+    public float maxSpeed = 0.05f;
     public float turnSpeed = 2.0f;
     public Rigidbody body;
 
@@ -17,7 +19,7 @@ public class EnemyController : MonoBehaviour
 
     void Update()
     {
-        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, 0.03f);
+        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, maxSpeed);
 
         Vector3 targetDirection = target.transform.position - transform.position;
         float singleStep = turnSpeed * Time.deltaTime;
@@ -29,6 +31,6 @@ public class EnemyController : MonoBehaviour
 
 	private void OnTriggerEnter(Collider other)
 	{
-        Debug.Log(gameObject.name + " " + other.gameObject.name);
+        
     }
 }

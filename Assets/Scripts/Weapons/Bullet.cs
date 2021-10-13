@@ -41,23 +41,14 @@ public class Bullet : MonoBehaviour
 
 	public void OnTriggerEnter(Collider other)
     {
-        Debug.Log(owner.gameObject.name + " " + other.gameObject.name);
+        Debug.Log(owner.gameObject.name + " shoots " + other.gameObject.name);
 
         if(other.CompareTag("Enemy"))
 		{
-            Debug.Log("Shot enemy!");
+            other.GetComponent<BaseEnemy>().hp -= damage;
 		}
 
         gameObject.SetActive(false);
     }
-
-	private void OnTriggerExit(Collider other)
-	{
-        Debug.Log(owner.gameObject.name + " " + other.gameObject.name);
-    }
-
-	private void OnTriggerStay(Collider other)
-	{
-        Debug.Log(owner.gameObject.name + " " + other.gameObject.name);
-    }
+    
 }
