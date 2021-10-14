@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class InfestedTerran : BaseEnemy
 {
-
 	private void OnTriggerEnter(Collider other)
 	{
 		if(other.CompareTag("Player"))

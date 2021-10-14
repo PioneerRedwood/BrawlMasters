@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BaseBulletGun : MonoBehaviour
+public class BaseBulletGun : BaseItem
 {
 	[Header("Weapon")]
 	public float reloadTime = 0.5f;
@@ -31,17 +31,6 @@ public class BaseBulletGun : MonoBehaviour
 		}
 	}
 
-	private void FixedUpdate()
-	{
-
-	}
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 	public bool Fire(BrawlerController controller)
 	{
 		if (restMagazine > 0)
@@ -57,7 +46,7 @@ public class BaseBulletGun : MonoBehaviour
 				UIManager.Instance.weaponStatText.text = restMagazine + " / " + magazine;
 				lastShootingTime = Time.realtimeSinceStartup;
 
-				GameObject bulletObject = ObjectPooler.SharedInstance.GetPooledObject("Bullet");
+				GameObject bulletObject = ObjectPoolingManager.SharedInstance.GetPooledObject("Bullet");
 				if (bulletObject != null)
 				{
 					bulletObject.GetComponent<Bullet>().SetBulletInfo(controller, muzzlePosition.position, transform.forward * 1.5f);

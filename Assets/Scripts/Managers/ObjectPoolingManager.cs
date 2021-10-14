@@ -2,9 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ObjectPooler : MonoBehaviour
+public class ObjectPoolingManager : MonoBehaviour
 {
-	public static ObjectPooler SharedInstance;
+	public static ObjectPoolingManager SharedInstance;
 
 	[System.Serializable]
 	public class ObjectPoolItem
@@ -17,6 +17,10 @@ public class ObjectPooler : MonoBehaviour
 		public bool activeStarted;
 	}
 
+	public List<ObjectPoolItem> itemsToPool;
+	public List<GameObject> pooledObjects;
+	public Vector2 randomPositionRange;
+
 	private void Awake()
 	{
 		SharedInstance = this;
@@ -28,6 +32,7 @@ public class ObjectPooler : MonoBehaviour
 			for (int i = 0; i < item.amount; ++i)
 			{
 				GameObject obj = Instantiate(item.poolItem);
+				obj.name = item.poolItem.name;
 				if(item.activeStarted)
 				{
 					obj.SetActive(true);
@@ -40,7 +45,7 @@ public class ObjectPooler : MonoBehaviour
 				obj.transform.SetParent(item.parentPooler.transform);
 				if(item.randomlyPositioned)
 				{
-					obj.transform.Translate(new Vector3(Random.Range(0.0f, 1000.0f), 1, Random.Range(0.0f, 1000.0f)));
+					obj.transform.TransformPoint(new Vector3(Random.Range(randomPositionRange.x, randomPositionRange.y), 0, Random.Range(randomPositionRange.x, randomPositionRange.y)));
 				}
 				
 				pooledObjects.Add(obj);
@@ -49,8 +54,34 @@ public class ObjectPooler : MonoBehaviour
 		}
 	}
 
-	public List<ObjectPoolItem> itemsToPool;
-	public List<GameObject> pooledObjects;
+	public void PoolNamedObject(string name)
+	{
+		foreach (ObjectPoolItem item in itemsToPool)
+		{
+			if(item.poolItem.name.Equals(name))
+			{
+				bool pooled = false;
+				for(int i = 0; i < item.amount; ++i)
+				{
+					if(pooled)
+					{
+						return;
+					}
+
+					Debug.Log($"{pooledObjects[i].name.Equals(name)} && {!pooledObjects[i].activeSelf}");
+					if (pooledObjects[i].name.Equals(name) && !pooledObjects[i].activeSelf)
+					{
+						pooledObjects[i].SetActive(true);
+						pooled = true;
+					}
+				}
+			}
+			else
+			{
+				continue;
+			}
+		}
+	}
 
 	void Start()
 	{

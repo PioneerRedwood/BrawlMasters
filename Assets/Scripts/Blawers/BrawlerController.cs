@@ -10,6 +10,7 @@ public class BrawlerController : MonoBehaviour
 	[Header("Player Properties")]
 	public float hp = 200;
 	public float moveSpeed = 2.0f;
+	[Range(0, 1.0f)]
 	public float turnSpeed = 2.0f;
 
 	private float currMoveSpeed = 2.0f;
@@ -49,6 +50,7 @@ public class BrawlerController : MonoBehaviour
 	public float movementSmoothingSpeed = 1f;
 	private Vector3 rawInputMovement;
 	private Vector3 smoothInputMovement;
+	public bool isLerpInput;
 
 	public void OnMovement(InputAction.CallbackContext value)
 	{
@@ -56,25 +58,21 @@ public class BrawlerController : MonoBehaviour
 		rawInputMovement = new Vector3(input.x, 0, input.y);
 	}
 	
-	// deprecated 2020-10-11
-	public void OnAttack(InputAction.CallbackContext value)
-	{
-		//Debug.Log($"OnAttack{value}");
-		//if(gun != null && Keyboard.current.spaceKey.wasPressedThisFrame)
-		//{
-		//	gun.Fire(this);
-		//}
-	}
-
 	// 입력에 따른 보간 움직임 - 부드러운 움직임을 기대할 수 있으나 모든 상황에서 적용되는 것은 아님
 	void CalculateMovementInputSmoothing()
 	{
-		smoothInputMovement = Vector3.Lerp(smoothInputMovement, rawInputMovement, Time.deltaTime * movementSmoothingSpeed);
+		if(isLerpInput)
+		{
+			smoothInputMovement = Vector3.Lerp(smoothInputMovement, rawInputMovement, Time.deltaTime * movementSmoothingSpeed);
+		}
+		else
+		{
+			smoothInputMovement = rawInputMovement;
+		}
 	}
 
 	void UpdatePlayerMovement()
 	{
-		// 원하는 움직임이 아님
 		if (smoothInputMovement.sqrMagnitude > 0.01f)
 		{
 			Quaternion rotation = Quaternion.Slerp(transform.rotation,
@@ -84,8 +82,8 @@ public class BrawlerController : MonoBehaviour
 			body.MoveRotation(rotation);
 		}
 
-		transform.Translate(currMoveSpeed * smoothInputMovement.z * Time.deltaTime * Vector3.forward);
-		transform.Translate(currMoveSpeed * smoothInputMovement.x * Time.deltaTime * Vector3.right);
+		Vector3 movement = currMoveSpeed * Time.deltaTime * smoothInputMovement + transform.position;
+		body.MovePosition(movement);
 
 	}
 

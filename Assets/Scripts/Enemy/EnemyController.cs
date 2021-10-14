@@ -15,17 +15,41 @@ public class EnemyController : MonoBehaviour
     void Start()
     {
         target = GameObject.FindWithTag("Player");
+        // 효율적인지 모르겠음
+        InvokeRepeating("ForceToMove", 0.0f, 0.01f);
     }
 
-    void Update()
+    void ForceToMove()
     {
-        transform.position = Vector3.MoveTowards(transform.position, target.transform.position, maxSpeed);
-
         Vector3 targetDirection = target.transform.position - transform.position;
-        float singleStep = turnSpeed * Time.deltaTime;
 
-        Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
-        transform.rotation = Quaternion.LookRotation(newDirection);
+        body.AddForce(targetDirection);
+    }
+
+    void FixedUpdate()
+    {
+        // Move
+        //body.MovePosition(target.transform.position);
+        
+        // Rotate
+        Vector3 targetDirection = target.transform.position - transform.position;
+
+        //body.AddForce(targetDirection, ForceMode.Force);
+
+        if (targetDirection.sqrMagnitude > 0.01f)
+        {
+            Quaternion rotation = Quaternion.Slerp(transform.rotation,
+                Quaternion.LookRotation(targetDirection),
+                turnSpeed);
+
+            body.MoveRotation(rotation);
+        }
+
+        
+        //float singleStep = turnSpeed * Time.deltaTime;
+
+        //Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
+        //transform.rotation = Quaternion.LookRotation(newDirection);
 
     }
 

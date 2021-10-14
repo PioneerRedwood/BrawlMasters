@@ -2,12 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : MonoBehaviour
+public class Bullet : BaseItem
 {
     public float speed = 10.0f;
     public float damage = 10.0f;
     private BrawlerController owner = null;
-    public string type = "Basic";
 
     private Vector3 spawnedPosition;
     private Vector3 destination;
@@ -23,7 +22,7 @@ public class Bullet : MonoBehaviour
 	}
 
     // Update에 넣는 것보다 Force로 물리적인 힘을 주는건 어떠한지
-    private void LateUpdate()
+    private void FixedUpdate()
     {
         if (owner != null)
         {
@@ -45,7 +44,12 @@ public class Bullet : MonoBehaviour
 
         if(other.CompareTag("Enemy"))
 		{
-            other.GetComponent<BaseEnemy>().hp -= damage;
+            BaseEnemy enemy = other.GetComponent<BaseEnemy>();
+            enemy.hp -= damage;
+            if (enemy.hp <= 0.0f)
+			{
+                enemy.gameObject.SetActive(false);
+			}
 		}
 
         gameObject.SetActive(false);
