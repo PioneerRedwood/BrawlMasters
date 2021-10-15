@@ -255,8 +255,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d8770250ebef52409fd3fb72739b2c7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  itemType: 1
+  isDisapear: 0
+  isOwned: 0
   reloadTime: 0.2
   magazine: 30
   shootingDelay: 0.1
   anim: {fileID: 7841858067542567789}
   muzzlePosition: {fileID: 3076912524103423819}
+  ownedBullet: {fileID: 6457768767884846277, guid: 0f712b510aec30d4682a9b9156d65247, type: 3}

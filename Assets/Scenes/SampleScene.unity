@@ -270,10 +270,10 @@ MonoBehaviour:
     activeStarted: 0
   - poolItem: {fileID: 3375063870765960352, guid: 630df1b2f0137144495126750b8bcd82, type: 3}
     parentPooler: {fileID: 612174417}
-    amount: 20
+    amount: 100
     shouldExpand: 1
     randomlyPositioned: 1
-    activeStarted: 0
+    activeStarted: 1
   pooledObjects: []
   randomPositionRange: {x: 0, y: 0}
 --- !u!1 &612174417

@@ -13,7 +13,7 @@ public class BrawlerController : MonoBehaviour
 	[Range(0, 1.0f)]
 	public float turnSpeed = 2.0f;
 
-	private float currMoveSpeed = 2.0f;
+	public float currMoveSpeed = 2.0f;
 	private float speedUpVolume = 1.25f;
 	private Rigidbody body;
 

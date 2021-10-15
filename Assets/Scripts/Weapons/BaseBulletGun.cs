@@ -16,6 +16,14 @@ public class BaseBulletGun : BaseItem
 	public Animation anim;
 	public Transform muzzlePosition;
 
+	[SerializeField]
+	private GameObject ownedBullet;
+
+	private void Awake()
+	{
+		
+	}
+
 	void Start()
 	{
 		lastShootingTime = Time.realtimeSinceStartup;
@@ -46,7 +54,7 @@ public class BaseBulletGun : BaseItem
 				UIManager.Instance.weaponStatText.text = restMagazine + " / " + magazine;
 				lastShootingTime = Time.realtimeSinceStartup;
 
-				GameObject bulletObject = ObjectPoolingManager.SharedInstance.GetPooledObject("Bullet");
+				GameObject bulletObject = ObjectPoolingManager.SharedInstance.GetPooledObject(ownedBullet.tag);
 				if (bulletObject != null)
 				{
 					bulletObject.GetComponent<Bullet>().SetBulletInfo(controller, muzzlePosition.position, transform.forward * 1.5f);
