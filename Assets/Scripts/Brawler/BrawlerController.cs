@@ -24,6 +24,7 @@ public class BrawlerController : MonoBehaviour
 	{
 		currMoveSpeed = moveSpeed;
 		body = GetComponentInChildren<Rigidbody>();
+		//axisLimits = new float[] { -21, 72, -35, 57 };
 	}
 
 	private void FixedUpdate()
@@ -71,6 +72,8 @@ public class BrawlerController : MonoBehaviour
 		}
 	}
 
+	//private float[] axisLimits;
+
 	void UpdatePlayerMovement()
 	{
 		if (smoothInputMovement.sqrMagnitude > 0.01f)
@@ -85,10 +88,18 @@ public class BrawlerController : MonoBehaviour
 		Vector3 movement = currMoveSpeed * Time.deltaTime * smoothInputMovement + transform.position;
 		body.MovePosition(movement);
 
-	}
+		// 동서남북, +X-X-Z+Z
+		// 만약 플레이어가 북서쪽 한계선에 있으면 더이상 카메라는 +Z, -X 방향으로는 못 가도록
+		//float moveX = movement.x, moveZ = movement.z;
+		//if ((movement.x <= axisLimits[0]) || (movement.x >= axisLimits[1]))
+		//{
+		//	moveX = transform.position.x;
+		//}
+		//if ((movement.z <= axisLimits[2]) || (movement.z >= axisLimits[3]))
+		//{
+		//	moveZ = transform.position.z;
+		//}
 
-	private void OnTriggerEnter(Collider other)
-	{
-		Debug.Log(other.tag);
+		//body.MovePosition(new Vector3(moveX, transform.position.y, moveZ));
 	}
 }

@@ -9,41 +9,37 @@ public class SpeedUpBoxItem : BaseItem
     public float attackSpeedUp;
     public float duration;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
 	private void OnTriggerEnter(Collider other)
 	{
 		if(other.CompareTag("Player"))
 		{
-            // speed up the player movement for duration
-            // object move 
+            // speed up the player movement for duration object move
             StartCoroutine("SpeedUpForDuration", other.GetComponent<BrawlerController>());
-
         }
 	}
 
- //   IEnumerator SpeedUpForDuration(BrawlerController player)
-	//{
- //       isOwned = true;
+	IEnumerator SpeedUpForDuration(BrawlerController player)
+	{
+		isOwned = true;
+        float prevMoveSpeed = player.moveSpeed;
+        float prevShootingDelay = player.gun.shootingDelay;
 
-		//player.currMoveSpeed += moveSpeedUp;
-		//player.gun.shootingDelay
+		player.moveSpeed += moveSpeedUp;
+        player.gun.shootingDelay -= attackSpeedUp;
 
-  //  	yield return new WaitForSeconds(duration);
+		gameObject.GetComponent<MeshRenderer>().enabled = false;
+		gameObject.GetComponent<Animator>().enabled = false;
 
-  //      isOwned = false;
-  //      gameObject.SetActive(false);
+		yield return new WaitForSeconds(duration);
 
+		// 플레이어 상태 변화
+		player.moveSpeed = prevMoveSpeed;
+		player.gun.shootingDelay = prevShootingDelay;
 
+		// 지속시간 끝나면 오브젝트 비활성화
+		isOwned = false;
+		gameObject.GetComponent<MeshRenderer>().enabled = true;
+		gameObject.GetComponent<Animator>().enabled = true;
+		gameObject.SetActive(false);
 	}
 }

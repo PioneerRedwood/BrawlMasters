@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class Bullet : BaseItem
 {
+    [Header("Bullet Properties")]
     public float speed = 10.0f;
     public float damage = 10.0f;
+    public float distance = 50.0f;
+
     private BrawlerController owner = null;
 
     private Vector3 spawnedPosition;
     private Vector3 destination;
-    public float distance = 50.0f;
 
     public void SetBulletInfo(BrawlerController owner, Vector3 spawnedPosition, Vector3 destination)
     {
@@ -34,13 +36,11 @@ public class Bullet : BaseItem
         {
             gameObject.SetActive(false);
         }
-
-        
     }
 
 	public void OnTriggerEnter(Collider other)
     {
-        Debug.Log(owner.gameObject.name + " shoots " + other.gameObject.name);
+        //Debug.Log(owner.gameObject.name + " shoots " + other.gameObject.name);
 
         if(other.CompareTag("Enemy"))
 		{

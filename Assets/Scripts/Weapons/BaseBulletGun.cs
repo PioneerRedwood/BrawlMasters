@@ -12,6 +12,7 @@ public class BaseBulletGun : BaseItem
 
 	private float lastShootingTime = 0.0f;
 	public float shootingDelay = 0.25f;
+	public float currShootingDelay;
 
 	public Animation anim;
 	public Transform muzzlePosition;

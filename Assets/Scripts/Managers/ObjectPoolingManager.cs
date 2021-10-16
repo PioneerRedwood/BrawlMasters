@@ -23,6 +23,7 @@ public class ObjectPoolingManager : MonoBehaviour
 
 	private void Awake()
 	{
+		Random.InitState(12345);
 		SharedInstance = this;
 
 		pooledObjects = new List<GameObject>();
@@ -33,23 +34,17 @@ public class ObjectPoolingManager : MonoBehaviour
 			{
 				GameObject obj = Instantiate(item.poolItem);
 				obj.name = item.poolItem.name;
-				if(item.activeStarted)
-				{
-					obj.SetActive(true);
-				}
-				else
-				{
-					obj.SetActive(false);
-				}
+				obj.SetActive(item.activeStarted);
 
 				obj.transform.SetParent(item.parentPooler.transform);
 				if(item.randomlyPositioned)
 				{
-					obj.transform.TransformPoint(new Vector3(Random.Range(randomPositionRange.x, randomPositionRange.y), 0, Random.Range(randomPositionRange.x, randomPositionRange.y)));
+					obj.transform.Translate(
+						new Vector3(Random.Range(randomPositionRange.x, randomPositionRange.y), 0, Random.Range(randomPositionRange.x, randomPositionRange.y)));
+					//Debug.Log($"random position? {obj.transform.position}");
 				}
 				
 				pooledObjects.Add(obj);
-
 			}
 		}
 	}
@@ -68,10 +63,43 @@ public class ObjectPoolingManager : MonoBehaviour
 						return;
 					}
 
-					Debug.Log($"{pooledObjects[i].name.Equals(name)} && {!pooledObjects[i].activeSelf}");
 					if (pooledObjects[i].name.Equals(name) && !pooledObjects[i].activeSelf)
 					{
 						pooledObjects[i].SetActive(true);
+						pooled = true;
+					}
+				}
+			}
+			else
+			{
+				continue;
+			}
+		}
+	}
+
+	public void PoolNamedObject(string name, bool randomly)
+	{
+		foreach (ObjectPoolItem item in itemsToPool)
+		{
+			if (item.poolItem.name.Equals(name))
+			{
+				bool pooled = false;
+				for (int i = 0; i < item.amount; ++i)
+				{
+					if (pooled)
+					{
+						return;
+					}
+
+					if (pooledObjects[i].name.Equals(name) && !pooledObjects[i].activeSelf)
+					{
+						pooledObjects[i].SetActive(true);
+						if(randomly)
+						{
+							pooledObjects[i].transform.Translate(
+								new Vector3(Random.Range(randomPositionRange.x, randomPositionRange.y), 0, Random.Range(randomPositionRange.x, randomPositionRange.y)));
+							Debug.Log($"pooled random {pooledObjects[i].transform.position}");
+						}
 						pooled = true;
 					}
 				}

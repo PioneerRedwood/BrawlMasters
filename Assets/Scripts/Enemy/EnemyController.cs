@@ -4,53 +4,42 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    private GameObject target;
+    private Transform target;
 
     [Header("Movement")]
-    [Range(0, 0.1f)]
-    public float maxSpeed = 0.05f;
+    [Range(0, 3.0f)]
+    public float moveSpeed = 1.2f;
     public float turnSpeed = 2.0f;
     public Rigidbody body;
 
     void Start()
     {
-        target = GameObject.FindWithTag("Player");
-        // 효율적인지 모르겠음
-        InvokeRepeating("ForceToMove", 0.0f, 0.01f);
-    }
-
-    void ForceToMove()
-    {
-        Vector3 targetDirection = target.transform.position - transform.position;
-
-        body.AddForce(targetDirection);
+        target = GameObject.FindWithTag("Player").GetComponent<Transform>();
     }
 
     void FixedUpdate()
     {
-        // Move
-        //body.MovePosition(target.transform.position);
-        
-        // Rotate
-        Vector3 targetDirection = target.transform.position - transform.position;
 
-        //body.AddForce(targetDirection, ForceMode.Force);
-
-        if (targetDirection.sqrMagnitude > 0.01f)
+		// Rotate
+		Vector3 targetPos = target.position - transform.position;
+             
+        if (targetPos.sqrMagnitude > 0.01f)
         {
             Quaternion rotation = Quaternion.Slerp(transform.rotation,
-                Quaternion.LookRotation(targetDirection),
+                Quaternion.LookRotation(targetPos),
                 turnSpeed);
 
             body.MoveRotation(rotation);
         }
-
         
-        //float singleStep = turnSpeed * Time.deltaTime;
+        // Move
+        float step = moveSpeed * Time.deltaTime;
+        transform.position = Vector3.MoveTowards(transform.position, target.position, step);
 
-        //Vector3 newDirection = Vector3.RotateTowards(transform.forward, targetDirection, singleStep, 0.0f);
-        //transform.rotation = Quaternion.LookRotation(newDirection);
-
+        if (Vector3.Distance(transform.position, target.position) < 0.001f)
+        {
+            target.position *= -1.0f;
+        }
     }
 
 	private void OnTriggerEnter(Collider other)
