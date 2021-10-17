@@ -9,10 +9,14 @@ public class BrawlerController : MonoBehaviour
 {
 	[Header("Player Properties")]
 	public float hp = 200;
+	
+	[Range(0, 5.0f)]
 	public float moveSpeed = 2.0f;
+	
 	[Range(0, 1.0f)]
 	public float turnSpeed = 2.0f;
 
+	
 	public float currMoveSpeed = 2.0f;
 	private float speedUpVolume = 1.25f;
 	private Rigidbody body;
@@ -24,20 +28,32 @@ public class BrawlerController : MonoBehaviour
 	{
 		currMoveSpeed = moveSpeed;
 		body = GetComponentInChildren<Rigidbody>();
-		//axisLimits = new float[] { -21, 72, -35, 57 };
 	}
 
 	private void FixedUpdate()
 	{
+		// Player doing
+		FireWeapon();
+		OnSpeedUp();
+
+		// Player movement
 		CalculateMovementInputSmoothing();
+		UpdatePlayerRotation();
 		UpdatePlayerMovement();
 
+	}
+
+	void FireWeapon()
+	{
 		if (gun != null && Keyboard.current.spaceKey.isPressed)
 		{
 			gun.Fire(this);
 		}
+	}
 
-		if(Keyboard.current.leftShiftKey.isPressed)
+	void OnSpeedUp()
+	{
+		if (Keyboard.current.leftShiftKey.isPressed)
 		{
 			currMoveSpeed = moveSpeed * speedUpVolume;
 		}
@@ -72,9 +88,7 @@ public class BrawlerController : MonoBehaviour
 		}
 	}
 
-	//private float[] axisLimits;
-
-	void UpdatePlayerMovement()
+	void UpdatePlayerRotation()
 	{
 		if (smoothInputMovement.sqrMagnitude > 0.01f)
 		{
@@ -84,22 +98,16 @@ public class BrawlerController : MonoBehaviour
 
 			body.MoveRotation(rotation);
 		}
+	}
 
-		Vector3 movement = currMoveSpeed * Time.deltaTime * smoothInputMovement + transform.position;
-		body.MovePosition(movement);
+	void UpdatePlayerMovement()
+	{
+		Vector3 movement = currMoveSpeed * Time.deltaTime * smoothInputMovement;
+		//Debug.Log($"Force {movement.magnitude}");
 
-		// 동서남북, +X-X-Z+Z
-		// 만약 플레이어가 북서쪽 한계선에 있으면 더이상 카메라는 +Z, -X 방향으로는 못 가도록
-		//float moveX = movement.x, moveZ = movement.z;
-		//if ((movement.x <= axisLimits[0]) || (movement.x >= axisLimits[1]))
-		//{
-		//	moveX = transform.position.x;
-		//}
-		//if ((movement.z <= axisLimits[2]) || (movement.z >= axisLimits[3]))
-		//{
-		//	moveZ = transform.position.z;
-		//}
-
-		//body.MovePosition(new Vector3(moveX, transform.position.y, moveZ));
+		if (movement.magnitude > 0.01f)
+		{
+			body.MovePosition(transform.position + movement);
+		}
 	}
 }

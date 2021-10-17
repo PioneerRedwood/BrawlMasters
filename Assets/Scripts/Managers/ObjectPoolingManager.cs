@@ -15,11 +15,23 @@ public class ObjectPoolingManager : MonoBehaviour
 		public bool shouldExpand;
 		public bool randomlyPositioned;
 		public bool activeStarted;
+
+		enum EnumPooledType
+		{
+			Normal,
+			WavePooling
+		}
+
+		[SerializeField]
+		EnumPooledType polledType;
 	}
 
 	public List<ObjectPoolItem> itemsToPool;
 	public List<GameObject> pooledObjects;
-	public Vector2 randomPositionRange;
+
+	// Depending on the size of map -11, 60, -30, 53
+	private Vector2 randomXAxis = new Vector2(-11, 60);
+	private Vector2 randomZAxis = new Vector2(-30, 53);
 
 	private void Awake()
 	{
@@ -40,8 +52,9 @@ public class ObjectPoolingManager : MonoBehaviour
 				if(item.randomlyPositioned)
 				{
 					obj.transform.Translate(
-						new Vector3(Random.Range(randomPositionRange.x, randomPositionRange.y), 0, Random.Range(randomPositionRange.x, randomPositionRange.y)));
-					//Debug.Log($"random position? {obj.transform.position}");
+						new Vector3(Random.Range(randomXAxis.x, randomXAxis.y),
+									0,
+									Random.Range(randomZAxis.x, randomZAxis.y)));
 				}
 				
 				pooledObjects.Add(obj);
@@ -49,71 +62,63 @@ public class ObjectPoolingManager : MonoBehaviour
 		}
 	}
 
-	public void PoolNamedObject(string name)
+	public bool PoolNamedObject(string name)
 	{
+		int idx = 0;
 		foreach (ObjectPoolItem item in itemsToPool)
 		{
 			if(item.poolItem.name.Equals(name))
 			{
-				bool pooled = false;
-				for(int i = 0; i < item.amount; ++i)
+				for(int i = idx; i < idx + item.amount; ++i)
 				{
-					if(pooled)
-					{
-						return;
-					}
-
-					if (pooledObjects[i].name.Equals(name) && !pooledObjects[i].activeSelf)
+					if (!pooledObjects[i].activeSelf)
 					{
 						pooledObjects[i].SetActive(true);
-						pooled = true;
+						return true;
 					}
 				}
 			}
 			else
 			{
+				idx += item.amount;
 				continue;
 			}
 		}
+
+		return false;
 	}
 
-	public void PoolNamedObject(string name, bool randomly)
+	public bool PoolNamedObject(string name, bool randomly)
 	{
+		int idx = 0;
 		foreach (ObjectPoolItem item in itemsToPool)
 		{
 			if (item.poolItem.name.Equals(name))
 			{
-				bool pooled = false;
-				for (int i = 0; i < item.amount; ++i)
+				for (int i = idx; i < idx + item.amount; ++i)
 				{
-					if (pooled)
-					{
-						return;
-					}
-
-					if (pooledObjects[i].name.Equals(name) && !pooledObjects[i].activeSelf)
+					if (!pooledObjects[i].activeSelf)
 					{
 						pooledObjects[i].SetActive(true);
-						if(randomly)
+						if (randomly)
 						{
 							pooledObjects[i].transform.Translate(
-								new Vector3(Random.Range(randomPositionRange.x, randomPositionRange.y), 0, Random.Range(randomPositionRange.x, randomPositionRange.y)));
-							Debug.Log($"pooled random {pooledObjects[i].transform.position}");
+								new Vector3(Random.Range(randomXAxis.x, randomXAxis.y), 
+											0, 
+											Random.Range(randomZAxis.x, randomZAxis.y)));
 						}
-						pooled = true;
+						return true;
 					}
 				}
 			}
 			else
 			{
+				idx += item.amount;
 				continue;
 			}
 		}
-	}
 
-	void Start()
-	{
-		
+		return false;
 	}
 
 	public GameObject GetPooledObject(string tag)
@@ -139,5 +144,41 @@ public class ObjectPoolingManager : MonoBehaviour
 		}
 
 		return null;
+	}
+
+	[System.Serializable]
+	public struct Wave
+	{
+		public bool started;
+		public GameObject enemyObject;
+		public int amounts;
+		public float createInterval;
+	}
+
+	public List<Wave> waves;
+	[SerializeField]
+	private float waveInterval;
+
+	private int currWaveIdx;
+
+	void Start()
+	{
+		currWaveIdx = 0;
+		StartCoroutine(nameof(GenerateEnemy), currWaveIdx);
+	}
+
+	IEnumerator GenerateEnemy(int idx)
+	{
+		for (int i = 0; i < waves[idx].amounts; ++i)
+		{
+			PoolNamedObject(waves[idx].enemyObject.name, true);
+			yield return new WaitForSeconds(waves[idx].createInterval);
+		}
+
+		currWaveIdx++;
+		if (currWaveIdx < waves.Count)
+		{
+			StartCoroutine(nameof(GenerateEnemy), currWaveIdx);
+		}
 	}
 }
