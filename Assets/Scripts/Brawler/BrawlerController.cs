@@ -15,14 +15,29 @@ public class BrawlerController : MonoBehaviour
 	
 	[Range(0, 1.0f)]
 	public float turnSpeed = 2.0f;
-
 	
 	public float currMoveSpeed = 2.0f;
 	private float speedUpVolume = 1.25f;
 	private Rigidbody body;
 
-	[Header("Weapon")]
-	public BaseBulletGun gun;
+	[Header("Weapon Properties")]
+	[SerializeField]
+	private BaseBulletGun gun;
+
+	public bool isSpeedUp;
+	public float speedUpAmount;
+	public bool isPowerUp;
+	public float powerUpAmount;
+
+	public BaseBulletGun GetOwnedGun()
+	{
+		return gun;
+	}
+
+	public Bullet GetOwnedBullet()
+	{
+		return gun.GetBullet();
+	}
 
 	void Start()
 	{
@@ -34,7 +49,7 @@ public class BrawlerController : MonoBehaviour
 	{
 		// Player doing
 		FireWeapon();
-		OnSpeedUp();
+		//OnSpeedUp();
 
 		// Player movement
 		CalculateMovementInputSmoothing();
@@ -51,6 +66,7 @@ public class BrawlerController : MonoBehaviour
 		}
 	}
 
+	// Shift 키 누르면 이동속도 소폭 상승
 	void OnSpeedUp()
 	{
 		if (Keyboard.current.leftShiftKey.isPressed)
@@ -102,7 +118,8 @@ public class BrawlerController : MonoBehaviour
 
 	void UpdatePlayerMovement()
 	{
-		Vector3 movement = currMoveSpeed * Time.deltaTime * smoothInputMovement;
+		float offset = (isSpeedUp ? currMoveSpeed * speedUpAmount : currMoveSpeed);
+		Vector3 movement = offset * Time.deltaTime * smoothInputMovement;
 		//Debug.Log($"Force {movement.magnitude}");
 
 		if (movement.magnitude > 0.01f)

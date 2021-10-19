@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bullet : BaseItem
+public class Bullet : MonoBehaviour
 {
     [Header("Bullet Properties")]
     public float speed = 10.0f;

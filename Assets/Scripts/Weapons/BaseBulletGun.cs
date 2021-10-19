@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BaseBulletGun : BaseItem
+public class BaseBulletGun : MonoBehaviour
 {
 	[Header("Weapon")]
 	public float reloadTime = 0.5f;
@@ -18,17 +18,17 @@ public class BaseBulletGun : BaseItem
 	public Transform muzzlePosition;
 
 	[SerializeField]
-	private GameObject ownedBullet;
+	private GameObject ownedBulletObject;
 
-	private void Awake()
+	public Bullet GetBullet()
 	{
-		
+		return ownedBulletObject.GetComponent<Bullet>();
 	}
 
 	void Start()
 	{
 		lastShootingTime = Time.realtimeSinceStartup;
-		InvokeRepeating("CheckReloading", 0.0f, reloadTime);
+		InvokeRepeating(nameof(CheckReloading), 0.0f, reloadTime);
 	}
 
 	void CheckReloading()
@@ -40,11 +40,13 @@ public class BaseBulletGun : BaseItem
 		}
 	}
 
-	public bool Fire(BrawlerController controller)
+	public bool Fire(BrawlerController player)
 	{
 		if (restMagazine > 0)
 		{
-			if ((lastShootingTime + shootingDelay) <= Time.realtimeSinceStartup)
+			//float delay = (player.itemStat.isSpeedUp ? shootingDelay * (2 - player.itemStat.speedUpAmount) : shootingDelay);
+			float delay = (player.isSpeedUp ? shootingDelay * (2 - player.speedUpAmount) : shootingDelay);
+			if ((lastShootingTime + delay) <= Time.realtimeSinceStartup)
 			{
 				if(anim.GetClip("FireGun"))
 				{
@@ -55,11 +57,12 @@ public class BaseBulletGun : BaseItem
 				UIManager.Instance.weaponStatText.text = restMagazine + " / " + magazine;
 				lastShootingTime = Time.realtimeSinceStartup;
 
-				GameObject bulletObject = ObjectPoolingManager.SharedInstance.GetPooledObject(ownedBullet.tag);
+				GameObject bulletObject = ObjectPoolingManager.SharedInstance.GetPooledObject(ownedBulletObject.tag);
 				if (bulletObject != null)
 				{
-					bulletObject.GetComponent<Bullet>().SetBulletInfo(controller, muzzlePosition.position, transform.forward * 1.5f);
+					bulletObject.GetComponent<Bullet>().SetBulletInfo(player, muzzlePosition.position, transform.forward * 1.5f);
 					bulletObject.SetActive(true);
+					Debug.Log($"BULLET INFO damage: {bulletObject.GetComponent<Bullet>().damage} range:{bulletObject.GetComponent<Bullet>().distance}");
 					return true;
 				}
 			}

@@ -4,14 +4,6 @@ using UnityEngine;
 
 public class BaseItem : MonoBehaviour
 {
-    public enum ItemType
-	{
-		BoxItem,
-		Weapon,
-		Bullet,
-	}
-
-	public ItemType itemType;
-	public bool isDisapear;
+	public GameObject owner;
 	public bool isOwned;
 }
