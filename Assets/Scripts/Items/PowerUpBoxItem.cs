@@ -5,17 +5,11 @@ using UnityEngine;
 public class PowerUpBoxItem : BaseItem
 {
     [Header("Power Up Properites")]
-    public float damageUp;
-    public float rangeUp;
-    public float duration;
-
-	private void FixedUpdate()
-	{
-        if (owner != null)
-        {
-            transform.Translate(owner.transform.position);
-        }
-    }
+    [Range(1.0f, 2.0f)]
+    [SerializeField]
+    private float increase;
+    [SerializeField]
+    private float duration;
 
 	private void OnTriggerEnter(Collider other)
 	{
@@ -27,27 +21,28 @@ public class PowerUpBoxItem : BaseItem
 
     IEnumerator PowerUpForDuration(BrawlerController player)
 	{
+        if (owner != null)
+		{
+            yield return new WaitForSeconds(0);
+        }
+
         owner = player.gameObject;
-        float prevAttackDamage = player.GetOwnedBullet().damage;
-        float prevAttackRange = player.GetOwnedBullet().distance;
+        player.isPowerUp++;
+        player.powerIncrease += increase;
 
-        player.GetOwnedBullet().damage += damageUp;
-        player.GetOwnedBullet().distance += rangeUp;
-
-        gameObject.GetComponent<MeshRenderer>().enabled = false;
-        gameObject.GetComponent<Animator>().enabled = false;
-        gameObject.GetComponent<ParticleSystem>().Stop();
+        GetComponent<MeshRenderer>().enabled = false;
+        GetComponent<Animator>().enabled = false;
+        GetComponent<ParticleSystem>().Stop();
 
         yield return new WaitForSeconds(duration);
 
         owner = null;
-        player.GetOwnedBullet().damage = prevAttackDamage;
-        player.GetOwnedBullet().distance = prevAttackRange;
+        player.isPowerUp--;
+        player.powerIncrease -= increase;
 
-        // 지속시간 끝나면 오브젝트 비활성화
-        gameObject.GetComponent<MeshRenderer>().enabled = true;
-        gameObject.GetComponent<Animator>().enabled = true;
-        gameObject.GetComponent<ParticleSystem>().Play();
+        GetComponent<MeshRenderer>().enabled = true;
+        GetComponent<Animator>().enabled = true;
+        GetComponent<ParticleSystem>().Play();
         gameObject.SetActive(false);
     }
 }

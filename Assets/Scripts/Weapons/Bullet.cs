@@ -13,26 +13,35 @@ public class Bullet : MonoBehaviour
 
     private Vector3 spawnedPosition;
     private Vector3 destination;
+    private Rigidbody body;
 
-    public void SetBulletInfo(BrawlerController owner, Vector3 spawnedPosition, Vector3 destination)
+	private void Awake()
+	{
+        body = GetComponent<Rigidbody>();
+	}
+
+	public void SetBulletInfo(BrawlerController owner, Vector3 spawnedPosition, Vector3 destination)
     {
         this.owner = owner;
         this.spawnedPosition = spawnedPosition;
         this.destination = destination;
 
 		transform.SetPositionAndRotation(spawnedPosition, Quaternion.identity);
+        
 	}
 
-    // Update에 넣는 것보다 Force로 물리적인 힘을 주는건 어떠한지
     private void FixedUpdate()
     {
         if (owner != null)
         {
-            // Do your work
-            transform.Translate(destination * speed * Time.deltaTime);
+            //transform.Translate(speed * Time.deltaTime * destination);
+            //body.MovePosition(speed * Time.deltaTime * destination);
+            //body.AddForceAtPosition(speed * Time.deltaTime * destination, transform.position);
+            // 총알을 어떻게 움직이는게 좋을지 구글링
+
         }
 
-        if(Vector3.Distance(transform.position, spawnedPosition) >= distance)
+        if(Vector3.Distance(transform.position, spawnedPosition) >= (owner.isPowerUp > 0 ? distance * owner.powerIncrease : distance))
         {
             gameObject.SetActive(false);
         }
@@ -40,16 +49,15 @@ public class Bullet : MonoBehaviour
 
 	public void OnTriggerEnter(Collider other)
     {
-        //Debug.Log(owner.gameObject.name + " shoots " + other.gameObject.name);
-
         if(other.CompareTag("Enemy"))
 		{
             BaseEnemy enemy = other.GetComponent<BaseEnemy>();
-            enemy.hp -= damage;
-            if (enemy.hp <= 0.0f)
-			{
-                enemy.gameObject.SetActive(false);
-			}
+            float offset = owner.isPowerUp > 0 ? damage * owner.powerIncrease : damage;
+
+            enemy.OnDamage(offset);
+
+            //Debug.Log($"BULLET INFO damage: {(owner.isPowerUp ? damage * owner.powerIncrease : damage)} " +
+            //    $"distance:{(owner.isPowerUp ? distance * owner.powerIncrease : distance)}");
 		}
 
         gameObject.SetActive(false);

@@ -5,6 +5,20 @@ using UnityEngine;
 public class BaseEnemy : MonoBehaviour
 {
     [Header("Basic Properties")]
-    public float hp;
-    public float damage;
+    protected float hp;
+    protected float attackDamage;
+
+    public void KillEnemy()
+	{
+        gameObject.SetActive(false);
+	}
+
+    public void OnDamage(float damage)
+	{
+        hp -= damage;
+        if (hp <= 0)
+		{
+            KillEnemy();
+		}
+	}
 }

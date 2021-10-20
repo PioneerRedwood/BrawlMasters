@@ -94,7 +94,7 @@ GameObject:
   - component: {fileID: 7112333228221821831}
   - component: {fileID: 1525106170436333832}
   - component: {fileID: 4076675064264460914}
-  m_Layer: 0
+  m_Layer: 21
   m_Name: InfestedTerran
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -175,8 +175,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1e6f895cbd3b96b4194f7b1443d80c76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 200
-  damage: 10
 --- !u!1 &4910684678317770088
 GameObject:
   m_ObjectHideFlags: 0

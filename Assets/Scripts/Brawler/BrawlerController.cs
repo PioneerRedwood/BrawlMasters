@@ -8,36 +8,29 @@ using UnityEngine.InputSystem.Controls;
 public class BrawlerController : MonoBehaviour
 {
 	[Header("Player Properties")]
-	public float hp = 200;
+	[SerializeField]
+	private float hp = 200;
 	
 	[Range(0, 5.0f)]
-	public float moveSpeed = 2.0f;
+	[SerializeField]
+	private float moveSpeed = 2.0f;
 	
 	[Range(0, 1.0f)]
-	public float turnSpeed = 2.0f;
-	
-	public float currMoveSpeed = 2.0f;
-	private float speedUpVolume = 1.25f;
+	[SerializeField]
+	private float turnSpeed = 2.0f;
+
+	[SerializeField]
+	private float currMoveSpeed = 2.0f;
 	private Rigidbody body;
 
 	[Header("Weapon Properties")]
 	[SerializeField]
-	private BaseBulletGun gun;
+	private BulletGun gun;
 
-	public bool isSpeedUp;
-	public float speedUpAmount;
-	public bool isPowerUp;
-	public float powerUpAmount;
-
-	public BaseBulletGun GetOwnedGun()
-	{
-		return gun;
-	}
-
-	public Bullet GetOwnedBullet()
-	{
-		return gun.GetBullet();
-	}
+	public uint isSpeedUp;
+	public float speedIncrease;
+	public uint isPowerUp;
+	public float powerIncrease;
 
 	void Start()
 	{
@@ -49,16 +42,14 @@ public class BrawlerController : MonoBehaviour
 	{
 		// Player doing
 		FireWeapon();
-		//OnSpeedUp();
 
 		// Player movement
 		CalculateMovementInputSmoothing();
 		UpdatePlayerRotation();
 		UpdatePlayerMovement();
-
 	}
 
-	void FireWeapon()
+	private void FireWeapon()
 	{
 		if (gun != null && Keyboard.current.spaceKey.isPressed)
 		{
@@ -66,24 +57,13 @@ public class BrawlerController : MonoBehaviour
 		}
 	}
 
-	// Shift 키 누르면 이동속도 소폭 상승
-	void OnSpeedUp()
-	{
-		if (Keyboard.current.leftShiftKey.isPressed)
-		{
-			currMoveSpeed = moveSpeed * speedUpVolume;
-		}
-		else
-		{
-			currMoveSpeed = moveSpeed;
-		}
-	}
-
 	[Header("Player Input")]
-	public float movementSmoothingSpeed = 1f;
+	[SerializeField]
+	private float movementSmoothingSpeed = 1f;
 	private Vector3 rawInputMovement;
 	private Vector3 smoothInputMovement;
-	public bool isLerpInput;
+	[SerializeField]
+	private bool isLerpInput;
 
 	public void OnMovement(InputAction.CallbackContext value)
 	{
@@ -91,7 +71,6 @@ public class BrawlerController : MonoBehaviour
 		rawInputMovement = new Vector3(input.x, 0, input.y);
 	}
 	
-	// 입력에 따른 보간 움직임 - 부드러운 움직임을 기대할 수 있으나 모든 상황에서 적용되는 것은 아님
 	void CalculateMovementInputSmoothing()
 	{
 		if(isLerpInput)
@@ -118,13 +97,21 @@ public class BrawlerController : MonoBehaviour
 
 	void UpdatePlayerMovement()
 	{
-		float offset = (isSpeedUp ? currMoveSpeed * speedUpAmount : currMoveSpeed);
+		float offset = (isSpeedUp > 0 ? currMoveSpeed * speedIncrease : currMoveSpeed);
 		Vector3 movement = offset * Time.deltaTime * smoothInputMovement;
-		//Debug.Log($"Force {movement.magnitude}");
 
 		if (movement.magnitude > 0.01f)
 		{
 			body.MovePosition(transform.position + movement);
+		}
+	}
+
+	public void OnDamage(float damage)
+	{
+		hp -= damage;
+		if(hp <= 0)
+		{
+			Debug.Log("-----YOU ARE DEAD-----");
 		}
 	}
 }

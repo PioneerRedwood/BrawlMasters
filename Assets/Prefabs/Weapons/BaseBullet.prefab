@@ -13,7 +13,8 @@ GameObject:
   - component: {fileID: 379866474708563284}
   - component: {fileID: -4639779196510011646}
   - component: {fileID: 4540678249458590851}
-  m_Layer: 0
+  - component: {fileID: 338357414458462814}
+  m_Layer: 22
   m_Name: BaseBullet
   m_TagString: Bullet
   m_Icon: {fileID: 0}
@@ -95,9 +96,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1ba13eff6d14a7341b884ab33f72a195, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemType: 0
-  isDisapear: 0
-  isOwned: 0
   speed: 50
   damage: 100
   distance: 50
@@ -114,3 +112,19 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.94
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!54 &338357414458462814
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6457768767884846277}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 116
+  m_CollisionDetection: 0

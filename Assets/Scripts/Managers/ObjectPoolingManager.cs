@@ -15,28 +15,28 @@ public class ObjectPoolingManager : MonoBehaviour
 		public bool shouldExpand;
 		public bool randomlyPositioned;
 		public bool activeStarted;
-
-		enum EnumPooledType
-		{
-			Normal,
-			WavePooling
-		}
-
-		[SerializeField]
-		EnumPooledType polledType;
 	}
+	[Header("Object Pooling")]
+	[SerializeField]
+	private Vector2 randomXAxis = new Vector2(10, 40);
+	[SerializeField]
+	private Vector2 randomZAxis = new Vector2(10, 40);
+	[SerializeField]
+	private Vector2 randomPosOffset;
 
-	public List<ObjectPoolItem> itemsToPool;
-	public List<GameObject> pooledObjects;
-
-	// Depending on the size of map -11, 60, -30, 53
-	private Vector2 randomXAxis = new Vector2(-11, 60);
-	private Vector2 randomZAxis = new Vector2(-30, 53);
+	[SerializeField]
+	private List<ObjectPoolItem> itemsToPool;
+	[SerializeField]
+	private List<GameObject> pooledObjects;
 
 	private void Awake()
 	{
-		Random.InitState(12345);
 		SharedInstance = this;
+
+		randomXAxis.x -= randomPosOffset.x;
+		randomXAxis.y -= randomPosOffset.x;
+		randomZAxis.x -= randomPosOffset.y;
+		randomZAxis.y -= randomPosOffset.y;
 
 		pooledObjects = new List<GameObject>();
 
@@ -49,16 +49,35 @@ public class ObjectPoolingManager : MonoBehaviour
 				obj.SetActive(item.activeStarted);
 
 				obj.transform.SetParent(item.parentPooler.transform);
-				if(item.randomlyPositioned)
+				if (item.randomlyPositioned)
 				{
 					obj.transform.Translate(
 						new Vector3(Random.Range(randomXAxis.x, randomXAxis.y),
 									0,
 									Random.Range(randomZAxis.x, randomZAxis.y)));
 				}
-				
+
 				pooledObjects.Add(obj);
 			}
+
+			if (item.poolItem.name.Contains("BoxItem"))
+			{
+				StartCoroutine(nameof(SpawnBoxItem), item.poolItem.name);
+			}
+		}
+	}
+
+	IEnumerator SpawnBoxItem(string itemName)
+	{
+		if(PoolNamedObject(itemName, true))
+		{
+			yield return new WaitForSeconds(5.0f);
+			StartCoroutine(nameof(SpawnBoxItem), itemName);
+		}
+		else
+		{
+			yield return new WaitForSeconds(20.0f);
+			StartCoroutine(nameof(SpawnBoxItem), itemName);
 		}
 	}
 
@@ -146,6 +165,8 @@ public class ObjectPoolingManager : MonoBehaviour
 		return null;
 	}
 
+	#region Wave managing
+	
 	[System.Serializable]
 	public struct Wave
 	{
@@ -154,11 +175,14 @@ public class ObjectPoolingManager : MonoBehaviour
 		public int amounts;
 		public float createInterval;
 	}
+	[Header("Wave")]
+	[SerializeField]
+	private List<Wave> waves;
 
-	public List<Wave> waves;
 	[SerializeField]
 	private float waveInterval;
 
+	[Header("Wave")]
 	private int currWaveIdx;
 
 	void Start()
@@ -181,4 +205,5 @@ public class ObjectPoolingManager : MonoBehaviour
 			StartCoroutine(nameof(GenerateEnemy), currWaveIdx);
 		}
 	}
+	#endregion
 }

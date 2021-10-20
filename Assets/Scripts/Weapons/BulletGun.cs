@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class BaseBulletGun : MonoBehaviour
+public class BulletGun : MonoBehaviour
 {
 	[Header("Weapon")]
 	public float reloadTime = 0.5f;
@@ -44,9 +44,8 @@ public class BaseBulletGun : MonoBehaviour
 	{
 		if (restMagazine > 0)
 		{
-			//float delay = (player.itemStat.isSpeedUp ? shootingDelay * (2 - player.itemStat.speedUpAmount) : shootingDelay);
-			float delay = (player.isSpeedUp ? shootingDelay * (2 - player.speedUpAmount) : shootingDelay);
-			if ((lastShootingTime + delay) <= Time.realtimeSinceStartup)
+			float offset = (player.isSpeedUp > 0? shootingDelay * (2 - player.speedIncrease) : shootingDelay);
+			if ((lastShootingTime + offset) <= Time.realtimeSinceStartup)
 			{
 				if(anim.GetClip("FireGun"))
 				{
@@ -60,9 +59,11 @@ public class BaseBulletGun : MonoBehaviour
 				GameObject bulletObject = ObjectPoolingManager.SharedInstance.GetPooledObject(ownedBulletObject.tag);
 				if (bulletObject != null)
 				{
-					bulletObject.GetComponent<Bullet>().SetBulletInfo(player, muzzlePosition.position, transform.forward * 1.5f);
+					//Debug.DrawLine();
+					Debug.Log($"muzzle.position{muzzlePosition.position} player.transform.forward{player.transform.forward}");
+					bulletObject.GetComponent<Bullet>().SetBulletInfo(player, muzzlePosition.position, player.transform.forward * 10.0f);
 					bulletObject.SetActive(true);
-					Debug.Log($"BULLET INFO damage: {bulletObject.GetComponent<Bullet>().damage} range:{bulletObject.GetComponent<Bullet>().distance}");
+					
 					return true;
 				}
 			}
