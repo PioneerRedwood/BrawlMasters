@@ -59,9 +59,7 @@ public class BulletGun : MonoBehaviour
 				GameObject bulletObject = ObjectPoolingManager.SharedInstance.GetPooledObject(ownedBulletObject.tag);
 				if (bulletObject != null)
 				{
-					//Debug.DrawLine();
-					Debug.Log($"muzzle.position{muzzlePosition.position} player.transform.forward{player.transform.forward}");
-					bulletObject.GetComponent<Bullet>().SetBulletInfo(player, muzzlePosition.position, player.transform.forward * 10.0f);
+					bulletObject.GetComponent<Bullet>().SetBulletInfo(player, muzzlePosition.position);
 					bulletObject.SetActive(true);
 					
 					return true;
