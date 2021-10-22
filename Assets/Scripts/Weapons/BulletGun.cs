@@ -36,7 +36,7 @@ public class BulletGun : MonoBehaviour
 		if (restMagazine < magazine)
 		{
 			restMagazine += 1;
-			UIManager.Instance.weaponStatText.text = restMagazine + " / " + magazine;
+			//UIManager.Instance.weaponStatText.text = restMagazine + " / " + magazine;
 		}
 	}
 
@@ -53,7 +53,7 @@ public class BulletGun : MonoBehaviour
 				}
 
 				restMagazine -= 1;
-				UIManager.Instance.weaponStatText.text = restMagazine + " / " + magazine;
+				//UIManager.Instance.weaponStatText.text = restMagazine + " / " + magazine;
 				lastShootingTime = Time.realtimeSinceStartup;
 
 				GameObject bulletObject = ObjectPoolingManager.SharedInstance.GetPooledObject(ownedBulletObject.tag);

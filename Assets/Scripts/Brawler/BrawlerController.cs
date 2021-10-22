@@ -36,22 +36,29 @@ public class BrawlerController : MonoBehaviour
 	{
 		currMoveSpeed = moveSpeed;
 		body = GetComponentInChildren<Rigidbody>();
+		
 	}
 
 	private void FixedUpdate()
 	{
 		// Player doing
-		FireWeapon();
+		//FireWeapon();
 
 		// Player movement
 		CalculateMovementInputSmoothing();
 		UpdatePlayerRotation();
 		UpdatePlayerMovement();
+
+		if(gun != null && Gamepad.current.buttonEast.isPressed)
+		{
+			FireWeapon();
+		}
 	}
 
-	private void FireWeapon()
+	public void FireWeapon()
 	{
-		if (gun != null && Keyboard.current.spaceKey.isPressed)
+		//if (gun != null && Keyboard.current.spaceKey.isPressed)
+		if (gun != null)
 		{
 			gun.Fire(this);
 		}
@@ -105,7 +112,7 @@ public class BrawlerController : MonoBehaviour
 			body.MovePosition(transform.position + movement);
 		}
 	}
-
+	
 	public void OnDamage(float damage)
 	{
 		hp -= damage;
